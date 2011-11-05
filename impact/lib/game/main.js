@@ -5,9 +5,8 @@ ig.module(
 	'impact.game',
 	'impact.font',
 	
-	'game.entities.puck',
-	'game.entities.paddle-cpu',
-	'game.entities.paddle-player',
+	'game.entities.ball-player',
+	'game.entities.node',
 	
 	'game.levels.main'
 )
@@ -18,11 +17,9 @@ MyGame = ig.Game.extend({
 	// Load a font
 	font: new ig.Font( 'media/04b03.font.png' ),
 	
-	
+	gravity:500,
 	init: function() {
-		ig.input.bind( ig.KEY.UP_ARROW, 'up' );
-		ig.input.bind( ig.KEY.DOWN_ARROW, 'down' );
-		
+		ig.input.bind( ig.KEY.Z, 'z' );
 		this.loadLevel( LevelMain );
 	},
 	
