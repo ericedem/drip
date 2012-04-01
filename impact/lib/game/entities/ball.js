@@ -27,8 +27,8 @@ EntityBall = ig.Entity.extend({
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
 
-		this.addAnim( 'idle', 0.1, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] );
-		this.addAnim( 'stun', 0.1, [19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0] );
+		this.addAnim( 'idle', 0.1, [0,0,0,0,0,0,1,1,2,3,4,3,2,1,1] );
+		this.addAnim( 'stun', 0.1, [5,6,7,8,9] );
 
 		this.vel.x = 0;
 		this.vel.y = 100;
@@ -51,7 +51,10 @@ EntityBall = ig.Entity.extend({
 
 		//state:
 		if(!this.isStunned() && this.currentAnim == this.anims['stun'])
+		{
 			this.currentAnim = this.anims['idle'];
+			this.currentAnim.rewind();
+		}
 
 		//account for staying inside each other after collision
 		if(this.lastCollisionBall != null)
@@ -159,6 +162,7 @@ EntityBall = ig.Entity.extend({
 	stun: function(time){
 		this.endSwing();
 		this.currentAnim = this.anims['stun'];
+		this.currentAnim.rewind();
 		this.stunTimer.set(time);
 	},
 
