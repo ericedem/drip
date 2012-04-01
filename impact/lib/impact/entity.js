@@ -10,10 +10,10 @@ ig.module(
 ig.Entity = ig.Class.extend({
 	id: 0,
 	settings: {},
-	
+
 	size: {x: 16, y:16},
 	offset: {x: 0, y: 0},
-	
+
 	pos: {x: 0, y:0},
 	last: {x: 0, y:0},
 	vel: {x: 0, y: 0},
@@ -25,26 +25,26 @@ ig.Entity = ig.Class.extend({
 	standing: false,
 	bounciness: 0,
 	minBounceVelocity: 40,
-	
+
 	anims: {},
 	animSheet: null,
 	currentAnim: null,
 	health: 10,
-	
+
 	type: 0, // TYPE.NONE
 	checkAgainst: 0, // TYPE.NONE
 	collides: 0, // COLLIDES.NEVER
-	
+
 	_killed: false,
-	
+
 	init: function( x, y, settings ) {
 		this.id = ++ig.Entity._lastId;
 		this.pos.x = x;
 		this.pos.y = y;
-		
+
 		ig.merge( this, settings );
 	},
-	
+
 	addAnim: function( name, frameTime, sequence, stop ) {
 		if( !this.animSheet ) {
 			throw( 'No animSheet to add the animation '+name+' to.' );
@@ -54,42 +54,42 @@ ig.Entity = ig.Class.extend({
 		if( !this.currentAnim ) {
 			this.currentAnim = a;
 		}
-		
+
 		return a;
 	},
-	
+
 	update: function() {
 		this.last.x = this.pos.x;
 		this.last.y = this.pos.y;
 		this.vel.y += ig.game.gravity * ig.system.tick * this.gravityFactor;
-		
+
 		this.vel.x = this.getNewVelocity( this.vel.x, this.accel.x, this.friction.x, this.maxVel.x );
 		this.vel.y = this.getNewVelocity( this.vel.y, this.accel.y, this.friction.y, this.maxVel.y );
-		
+
 		// movement & collision
 		var mx = this.vel.x * ig.system.tick;
 		var my = this.vel.y * ig.system.tick;
-		var res = ig.game.collisionMap.trace( 
+		var res = ig.game.collisionMap.trace(
 			this.pos.x, this.pos.y, mx, my, this.size.x, this.size.y
 		);
 		this.handleMovementTrace( res );
-		
+
 		if( this.currentAnim ) {
 			this.currentAnim.update();
 		}
 	},
-	
-	
+
+
 	getNewVelocity: function( vel, accel, friction, max ) {
 		if( accel ) {
 			return ( vel + accel * ig.system.tick ).limit( -max, max );
 		}
 		else if( friction ) {
 			var delta = friction * ig.system.tick;
-			
+
 			if( vel - delta > 0) {
 				return vel - delta;
-			} 
+			}
 			else if( vel + delta < 0 ) {
 				return vel + delta;
 			}
@@ -99,13 +99,13 @@ ig.Entity = ig.Class.extend({
 		}
 		return vel.limit( -max, max );
 	},
-	
-	
+
+
 	handleMovementTrace: function( res ) {
 		this.standing = false;
 		if( res.collision.y ) {
 			if( this.bounciness > 0 && Math.abs(this.vel.y) > this.minBounceVelocity ) {
-				this.vel.y *= -this.bounciness;				
+				this.vel.y *= -this.bounciness;
 			}
 			else {
 				if( this.vel.y > 0 ) {
@@ -116,7 +116,7 @@ ig.Entity = ig.Class.extend({
 		}
 		if( res.collision.x ) {
 			if( this.bounciness > 0 && Math.abs(this.vel.x) > this.minBounceVelocity ) {
-				this.vel.x *= -this.bounciness;				
+				this.vel.x *= -this.bounciness;
 			}
 			else {
 				this.vel.x = 0;
@@ -124,8 +124,8 @@ ig.Entity = ig.Class.extend({
 		}
 		this.pos = res.pos;
 	},
-	
-	
+
+
 	draw: function() {
 		if( this.currentAnim ) {
 			this.currentAnim.draw(
@@ -134,22 +134,22 @@ ig.Entity = ig.Class.extend({
 			);
 		}
 	},
-	
-	
+
+
 	kill: function() {
 		ig.game.removeEntity( this );
 	},
-	
-	
+
+
 	receiveDamage: function( amount, from ) {
 		this.health -= amount;
 		if( this.health <= 0 ) {
 			this.kill();
 		}
 	},
-	
-	
-	touches: function( other ) {		
+
+
+	touches: function( other ) {
 		return !(
 			this.pos.x > other.pos.x + other.size.x ||
 			this.pos.x + this.size.x < other.pos.x ||
@@ -158,26 +158,26 @@ ig.Entity = ig.Class.extend({
 		);
 	},
 	distanceToSq: function( other ) {
-		var xd = (this.pos.x + this.size.x/2) - (other.pos.x + other.size.x/2); 
+		var xd = (this.pos.x + this.size.x/2) - (other.pos.x + other.size.x/2);
 		var yd = (this.pos.y + this.size.y/2) - (other.pos.y + other.size.y/2);
 		return xd*xd + yd*yd;
 	},
-	
-	
+
+
 	distanceTo: function( other ) {
 		return Math.sqrt( this.distanceToSq(other) );
 	},
-	
-	
-	
+
+
+
 	angleTo: function( other ) {
 		return Math.atan2(
 			(other.pos.y + other.size.y/2) - (this.pos.y + this.size.y/2),
 			(other.pos.x + other.size.x/2) - (this.pos.x + this.size.x/2)
 		);
 	},
-	
-	
+
+
 	check: function( other ) {},
 	collideWith: function( other, axis ) {}
 });
@@ -215,16 +215,16 @@ ig.Entity.TYPE = {
 
 
 ig.Entity.checkPair = function( a, b ) {
-	
+
 	// Do these entities want checks?
 	if( a.checkAgainst & b.type ) {
 		a.check( b );
 	}
-	
+
 	if( b.checkAgainst & a.type ) {
 		b.check( a );
 	}
-	
+
 	// If this pair allows collision, solve it! At least one entity must
 	// collide ACTIVE or FIXED, while the other one must not collide NEVER.
 	if(
@@ -244,37 +244,29 @@ ig.Entity.circlesCollide = function (a, b) {
 }
 
 ig.Entity.solveCircleCollision =  function (a, b) {
-	
+
 	var abTH = a.angleTo(b);
 	var avTH = Math.atan2(a.vel.y, a.vel.x);
 	var acTH = avTH - abTH;
 	var aspeed = Math.sqrt((a.vel.x*a.vel.x) + (a.vel.y*a.vel.y));
 	var apower = Math.cos(acTH) * aspeed;
 	var dAVel = {x:apower * Math.cos(abTH), y:apower * Math.sin(abTH)};
-	
+
 	var baTH = b.angleTo(a);
 	var bvTH = Math.atan2(b.vel.y, b.vel.x);
 	var bcTH = bvTH - baTH;
 	var bspeed = Math.sqrt((b.vel.x*b.vel.x) + (b.vel.y*b.vel.y));
 	var bpower = Math.cos(bcTH) * bspeed;
 	var dBVel = {x:bpower * Math.cos(baTH), y:bpower * Math.sin(baTH)};
-	
+
 	var dVel = {x:dBVel.x - dAVel.x, y:dBVel.y - dAVel.y};
-	
-	a.vel.x += dVel.x;
-	a.vel.y += dVel.y;
-	
-	b.vel.x -= dVel.x;
-	b.vel.y -= dVel.y;
-		
-	a.collideWith(b, 'x');
-	b.collideWith(a, 'x');
-	
-	/*
-	*/
+
+	a.collideWith(b, dVel.x, dVel.y);
+	b.collideWith(a, -dVel.x, -dVel.y);
 }
 
 ig.Entity.solveCollision = function( a, b ) {
+
 	//Ball on ball collision
 	if(a.type == ig.Entity.BALL && b.type == ig.Entity.BALL)
 	{
@@ -284,8 +276,8 @@ ig.Entity.solveCollision = function( a, b ) {
 		}
 		return;
 	}
-	
-	
+
+
 	// If one entity is FIXED, or the other entity is LITE, the weak
 	// (FIXED/NON-LITE) entity won't move in collision response
 	var weak = null;
@@ -301,8 +293,8 @@ ig.Entity.solveCollision = function( a, b ) {
 	) {
 		weak = b;
 	}
-		
-	
+
+
 	// Did they already overlap on the X-axis in the last frame? If so,
 	// this must be a vertical collision!
 	if(
@@ -319,7 +311,7 @@ ig.Entity.solveCollision = function( a, b ) {
 		a.collideWith( b, 'y' );
 		b.collideWith( a, 'y' );
 	}
-	
+
 	// Horizontal collision
 	else if(
 		a.last.y + a.size.y > b.last.y &&
@@ -344,30 +336,30 @@ ig.Entity.solveCollision = function( a, b ) {
 
 ig.Entity.seperateOnXAxis = function( left, right, weak ) {
 	var nudge = (left.pos.x + left.size.x - right.pos.x);
-	
+
 	// We have a weak entity, so just move this one
 	if( weak ) {
 		var strong = left === weak ? right : left;
 		weak.vel.x = -weak.vel.x * weak.bounciness + strong.vel.x;
-		
-		var resWeak = ig.game.collisionMap.trace( 
+
+		var resWeak = ig.game.collisionMap.trace(
 			weak.pos.x, weak.pos.y, weak == left ? -nudge : nudge, 0, weak.size.x, weak.size.y
 		);
 		weak.pos.x = resWeak.pos.x;
 	}
-	
+
 	// Normal collision - both move
 	else {
 		var v2 = (left.vel.x - right.vel.x)/2;
 		left.vel.x = -v2;
 		right.vel.x = v2;
-	
-		var resLeft = ig.game.collisionMap.trace( 
+
+		var resLeft = ig.game.collisionMap.trace(
 			left.pos.x, left.pos.y, -nudge/2, 0, left.size.x, left.size.y
 		);
 		left.pos.x = Math.floor(resLeft.pos.x);
-		
-		var resRight = ig.game.collisionMap.trace( 
+
+		var resRight = ig.game.collisionMap.trace(
 			right.pos.x, right.pos.y, nudge/2, 0, right.size.x, right.size.y
 		);
 		right.pos.x = Math.ceil(resRight.pos.x);
@@ -377,55 +369,55 @@ ig.Entity.seperateOnXAxis = function( left, right, weak ) {
 
 ig.Entity.seperateOnYAxis = function( top, bottom, weak ) {
 	var nudge = (top.pos.y + top.size.y - bottom.pos.y);
-	
+
 	// We have a weak entity, so just move this one
 	if( weak ) {
 		var strong = top === weak ? bottom : top;
 		weak.vel.y = -weak.vel.y * weak.bounciness + strong.vel.y;
-		
+
 		// Riding on a platform?
 		var nudgeX = 0;
 		if( weak == top && Math.abs(weak.vel.y - strong.vel.y) < weak.minBounceVelocity ) {
 			weak.standing = true;
 			nudgeX = strong.vel.x * ig.system.tick;
 		}
-		
-		var resWeak = ig.game.collisionMap.trace( 
+
+		var resWeak = ig.game.collisionMap.trace(
 			weak.pos.x, weak.pos.y, nudgeX, weak == top ? -nudge : nudge, weak.size.x, weak.size.y
 		);
 		weak.pos.y = resWeak.pos.y;
 		weak.pos.x = resWeak.pos.x;
 	}
-	
+
 	// Bottom entity is standing - just bounce the top one
-	else if( ig.game.gravity && (bottom.standing || top.vel.y > 0) ) {	
-		var resTop = ig.game.collisionMap.trace( 
+	else if( ig.game.gravity && (bottom.standing || top.vel.y > 0) ) {
+		var resTop = ig.game.collisionMap.trace(
 			top.pos.x, top.pos.y, 0, -(top.pos.y + top.size.y - bottom.pos.y), top.size.x, top.size.y
 		);
 		top.pos.y = resTop.pos.y;
-		
+
 		if( top.bounciness > 0 && top.vel.y > top.minBounceVelocity ) {
-			top.vel.y *= -top.bounciness;		
+			top.vel.y *= -top.bounciness;
 		}
 		else {
 			top.standing = true;
 			top.vel.y = 0;
 		}
 	}
-	
+
 	// Normal collision - both move
 	else {
 		var v2 = (top.vel.y - bottom.vel.y)/2;
 		top.vel.y = -v2;
 		bottom.vel.y = v2;
-		
+
 		var nudgeX = bottom.vel.x * ig.system.tick;
-		var resTop = ig.game.collisionMap.trace( 
+		var resTop = ig.game.collisionMap.trace(
 			top.pos.x, top.pos.y, nudgeX, -nudge/2, top.size.x, top.size.y
 		);
 		top.pos.y = resTop.pos.y;
-		
-		var resBottom = ig.game.collisionMap.trace( 
+
+		var resBottom = ig.game.collisionMap.trace(
 			bottom.pos.x, bottom.pos.y, 0, nudge/2, bottom.size.x, bottom.size.y
 		);
 		bottom.pos.y = resBottom.pos.y;
