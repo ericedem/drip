@@ -6,6 +6,7 @@ ig.module(
 	'impact.font',
 	
 	'game.entities.ball-player',
+	'game.entities.ball-ai',
 	'game.entities.node',
 	
 	'game.levels.main'
@@ -20,6 +21,8 @@ MyGame = ig.Game.extend({
 	gravity:500,
 	init: function() {
 		ig.input.bind( ig.KEY.Z, 'z' );
+		ig.input.bind( ig.KEY.ADD, '+' );
+		ig.input.bind( ig.KEY.SUBSTRACT, '-' );
 		this.loadLevel( LevelMain );
 	},
 	

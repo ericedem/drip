@@ -157,13 +157,17 @@ ig.Entity = ig.Class.extend({
 			this.pos.y + this.size.y < other.pos.y
 		);
 	},
+	distanceToSq: function( other ) {
+		var xd = (this.pos.x + this.size.x/2) - (other.pos.x + other.size.x/2); 
+		var yd = (this.pos.y + this.size.y/2) - (other.pos.y + other.size.y/2);
+		return xd*xd + yd*yd;
+	},
 	
 	
 	distanceTo: function( other ) {
-		var xd = (this.pos.x + this.size.x/2) - (other.pos.x + other.size.x/2); 
-		var yd = (this.pos.y + this.size.y/2) - (other.pos.y + other.size.y/2);
-		return Math.sqrt( xd*xd + yd*yd );
+		return Math.sqrt( this.distanceToSq(other) );
 	},
+	
 	
 	
 	angleTo: function( other ) {
@@ -205,9 +209,7 @@ ig.Entity.COLLIDES = {
 
 ig.Entity.TYPE = {
 	NONE: 0,
-	A: 1,
-	B: 2,
-	BOTH: 3
+	BALL: 1
 };
 
 
@@ -233,8 +235,56 @@ ig.Entity.checkPair = function( a, b ) {
 	}
 };
 
+ig.Entity.circlesCollide = function (a, b) {
+	var aRadius = a.size.x / 2;
+	var bRadius = b.size.x / 2;
+	var collideDist = aRadius + bRadius;
+	var distSq = a.distanceToSq(b);
+	return distSq < collideDist*collideDist;
+}
+
+ig.Entity.solveCircleCollision =  function (a, b) {
+	
+	var abTH = a.angleTo(b);
+	var avTH = Math.atan2(a.vel.y, a.vel.x);
+	var acTH = avTH - abTH;
+	var aspeed = Math.sqrt((a.vel.x*a.vel.x) + (a.vel.y*a.vel.y));
+	var apower = Math.cos(acTH) * aspeed;
+	var dAVel = {x:apower * Math.cos(abTH), y:apower * Math.sin(abTH)};
+	
+	var baTH = b.angleTo(a);
+	var bvTH = Math.atan2(b.vel.y, b.vel.x);
+	var bcTH = bvTH - baTH;
+	var bspeed = Math.sqrt((b.vel.x*b.vel.x) + (b.vel.y*b.vel.y));
+	var bpower = Math.cos(bcTH) * bspeed;
+	var dBVel = {x:bpower * Math.cos(baTH), y:bpower * Math.sin(baTH)};
+	
+	var dVel = {x:dBVel.x - dAVel.x, y:dBVel.y - dAVel.y};
+	
+	a.vel.x += dVel.x;
+	a.vel.y += dVel.y;
+	
+	b.vel.x -= dVel.x;
+	b.vel.y -= dVel.y;
+		
+	a.collideWith(b, 'x');
+	b.collideWith(a, 'x');
+	
+	/*
+	*/
+}
 
 ig.Entity.solveCollision = function( a, b ) {
+	//Ball on ball collision
+	if(a.type == ig.Entity.BALL && b.type == ig.Entity.BALL)
+	{
+		if(ig.Entity.circlesCollide(a,b))
+		{
+			ig.Entity.solveCircleCollision(a,b);
+		}
+		return;
+	}
+	
 	
 	// If one entity is FIXED, or the other entity is LITE, the weak
 	// (FIXED/NON-LITE) entity won't move in collision response

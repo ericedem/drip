@@ -145,6 +145,14 @@ ig.Game = ig.Class.extend({
 	
 	
 	update: function(){
+		//
+		if(ig.input.state('+')){
+				ig.system.tick = ig.system.tick * 10;
+		}
+		if(ig.input.state('-')){
+				ig.system.tick = ig.system.tick / 10;
+		}
+		
 		// load new level?
 		if( this._levelToLoad ) {
 			this.loadLevel( this._levelToLoad );

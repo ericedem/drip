@@ -8,19 +8,9 @@ ig.module(
 
 EntityBallPlayer = EntityBall.extend({
 	
-//	animSheet: new ig.AnimationSheet( 'media/ball-blue.png', 64, 128 ),
-	
 	update: function() {
-		
-		
-		if( ig.input.state('z') )
-		{
-			if(!this.attached)
-				this.startSwing();
-		}
-		else if (this.attached)
-			this.endSwing();
-		
+		//handle input is the only way the player ball is special
+		this.wantSwing = ig.input.state('z');
 		
 		this.parent();
 	}
