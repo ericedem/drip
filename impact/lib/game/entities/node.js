@@ -11,7 +11,8 @@ EntityNode = ig.Entity.extend({
 	size: {x:48, y:48},
 	collides: ig.Entity.COLLIDES.NEVER,
 	
-	animSheet: new ig.AnimationSheet( 'media/puck.png', 48, 48 ),
+	animSheet: new ig.AnimationSheet( 'media/node.png', 48, 48 ),
+	zIndex: 2,
 	
 	gravityFactor: 0,
 	
