@@ -20,6 +20,7 @@ MyGame = ig.Game.extend({
 	
 	gravity:500,
 	init: function() {
+		ig.input.bind( ig.KEY.MOUSE1, 'z' );
 		ig.input.bind( ig.KEY.Z, 'z' );
 		ig.input.bind( ig.KEY.ADD, '+' );
 		ig.input.bind( ig.KEY.SUBSTRACT, '-' );
