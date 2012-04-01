@@ -13,7 +13,8 @@ EntityBall = ig.Entity.extend({
 	type: ig.Entity.BALL,
 	collides: ig.Entity.COLLIDES.ACTIVE,
 	
-	animSheet: new ig.AnimationSheet( 'media/puck.png', 48, 48 ),
+	animSheet: new ig.AnimationSheet( 'media/ball.png', 48, 48 ),
+	zIndex: 1,
 	
 	bounciness: 1,
 	gravityFactor: 1,
@@ -25,8 +26,8 @@ EntityBall = ig.Entity.extend({
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
 		
-		this.addAnim( 'idle', 0.1, [2,3,4,4,4,3] );
-		this.addAnim( 'stun', 0.1, [0] );
+		this.addAnim( 'idle', 0.1, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] );
+		this.addAnim( 'stun', 0.1, [19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0] );
 		
 		this.vel.x = 0;
 		this.vel.y = 100;
