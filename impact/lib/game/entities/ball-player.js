@@ -6,12 +6,17 @@ ig.module(
 )
 .defines(function(){
 
+
 EntityBallPlayer = EntityBall.extend({
-	
+
+	init: function( x, y, settings ) {
+//		this.animSheet = new ig.AnimationSheet( 'media/ball.png', 48, 48, 30 );
+		this.parent( x, y, settings );
+	},
+
 	update: function() {
-		//handle input is the only way the player ball is special
 		this.wantSwing = ig.input.state('z');
-		
+
 		this.parent();
 	}
 });
