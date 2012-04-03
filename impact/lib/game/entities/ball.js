@@ -14,6 +14,8 @@ EntityBall = ig.Entity.extend({
 	collides: ig.Entity.COLLIDES.ACTIVE,
 
 	animSheet: new ig.AnimationSheet( 'media/ball.png', 48, 48 ),
+	angle: 0, //radians
+	angleSpeed: 0, //radians/s
 	zIndex: 1,
 
 	bounciness: .8,
@@ -41,7 +43,7 @@ EntityBall = ig.Entity.extend({
 
 	update: function() {
 
-		//input:
+		//---INPUT---
 		if( this.wantSwing )
 		{
 			if(!this.attached && !this.isStunned())
@@ -50,7 +52,8 @@ EntityBall = ig.Entity.extend({
 		else if (this.attached)
 			this.endSwing();
 
-		//state:
+		//---STATE---
+		//stun finished
 		if(!this.isStunned() && this.currentAnim == this.anims['stun'])
 		{
 			this.currentAnim = this.anims['idle'];
@@ -72,6 +75,7 @@ EntityBall = ig.Entity.extend({
 			this.last.x = this.pos.x;
 			this.last.y = this.pos.y;
 
+			this.angle += this.attachedSpeed * ig.system.tick;
 			this.attachedAngle += this.attachedSpeed * ig.system.tick;
 			this.attachedSpeed += (this.attachedSpeed > 0 ? 1 : -1)* ig.system.tick;
 
@@ -94,7 +98,11 @@ EntityBall = ig.Entity.extend({
 			}
 		}
 		else
+		{
+			this.angle += this.angleSpeed * ig.system.tick;
 			this.parent();
+		}
+		this.currentAnim.angle = this.angle;
 	},
 
 	//worst named function ever award goes to: world collision
@@ -158,10 +166,13 @@ EntityBall = ig.Entity.extend({
 
 	endSwing: function() {
 		this.attached = false;
+
+		this.angleSpeed = this.attachedSpeed;
 	},
 
 	stun: function(time){
-		this.endSwing();
+		if(this.attached)
+			this.endSwing();
 		this.currentAnim = this.anims['stun'];
 		this.currentAnim.rewind();
 		this.stunTimer.set(time);
