@@ -157,9 +157,15 @@ ig.Entity = ig.Class.extend({
 			this.pos.y + this.size.y < other.pos.y
 		);
 	},
+	centerX: function(){
+		return this.pos.x + this.size.x/2;
+	},
+	centerY: function(){
+		return this.pos.y + this.size.y/2;
+	},
 	distanceToSq: function( other ) {
-		var xd = (this.pos.x + this.size.x/2) - (other.pos.x + other.size.x/2);
-		var yd = (this.pos.y + this.size.y/2) - (other.pos.y + other.size.y/2);
+		var xd = this.centerX() - other.centerX();
+		var yd = this.centerY() - other.centerY();
 		return xd*xd + yd*yd;
 	},
 
@@ -172,8 +178,8 @@ ig.Entity = ig.Class.extend({
 
 	angleTo: function( other ) {
 		return Math.atan2(
-			(other.pos.y + other.size.y/2) - (this.pos.y + this.size.y/2),
-			(other.pos.x + other.size.x/2) - (this.pos.x + this.size.x/2)
+			other.centerY() - this.centerY(),
+			other.centerX() - this.centerX()
 		);
 	},
 

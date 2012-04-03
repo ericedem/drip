@@ -7,24 +7,19 @@ ig.module(
 .defines(function(){
 
 EntityNode = ig.Entity.extend({
-	
-	size: {x:48, y:48},
+
+	size: {x:100, y:100},
 	collides: ig.Entity.COLLIDES.NEVER,
-	
-	animSheet: new ig.AnimationSheet( 'media/node.png', 48, 48 ),
-	zIndex: 2,
-	
+
+	animSheet: new ig.AnimationSheet( 'media/node.png', 100, 100 ),
+	zIndex: 0,
+
 	gravityFactor: 0,
-	
-	update: function() {
-		
-		this.parent();
-	},
-	
+
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
-		
-		this.addAnim( 'idle', 0.1, [0,1,2,3,4,4,4,4,3,2,1] );
+
+		this.addAnim( 'idle', 0.1, [0] );
 	}
 });
 

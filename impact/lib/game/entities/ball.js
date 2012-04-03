@@ -82,8 +82,8 @@ EntityBall = ig.Entity.extend({
 			this.vel.x = -this.attachedDistance * this.attachedSpeed * Math.sin(this.attachedAngle);
 			this.vel.y = this.attachedDistance * this.attachedSpeed * Math.cos(this.attachedAngle);
 
-			var newX = this.attachedNode.pos.x + Math.cos(this.attachedAngle) * this.attachedDistance;
-			var newY = this.attachedNode.pos.y + Math.sin(this.attachedAngle) * this.attachedDistance;
+			var newX = this.attachedNode.centerX() - this.size.x/2 + Math.cos(this.attachedAngle) * this.attachedDistance;
+			var newY = this.attachedNode.centerY() - this.size.y/2 + Math.sin(this.attachedAngle) * this.attachedDistance;
 
 			// movement & collision
 			var mx = newX - this.last.x;
@@ -140,19 +140,19 @@ EntityBall = ig.Entity.extend({
 	startSwing: function() {
 
 		var nodes = ig.game.getEntitiesByType( EntityNode );
-		var closestNode = 0;
-		var closestDistance = this.distanceToSq(nodes[0]);
+		var closestNodeI = 0;
+		var closestDistanceSq = this.distanceToSq(nodes[0]);
 		for( var e = 1; e < nodes.length; e++ ) {
-			var nextDistance = this.distanceToSq(nodes[e]);
-			if(nextDistance < closestDistance)
+			var nextDistanceSq = this.distanceToSq(nodes[e]);
+			if(nextDistanceSq < closestDistanceSq)
 			{
-				closestDistance = nextDistance;
-				closestNode = e;
+				closestDistanceSq = nextDistanceSq;
+				closestNodeI = e;
 			}
 		}
-		this.attachedNode = nodes[closestNode];
+		this.attachedNode = nodes[closestNodeI];
 
-		this.attachedDistance = this.attachedNode.distanceTo(this);
+		this.attachedDistance = Math.sqrt(closestDistanceSq);
 		this.attachedAngle = this.attachedNode.angleTo(this);
 
 		var speed = Math.sqrt(this.vel.x * this.vel.x + this.vel.y * this.vel.y);
