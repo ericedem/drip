@@ -17,6 +17,7 @@ EntityBall = ig.Entity.extend({
 	zIndex: 1,
 
 	bounciness: .8,
+	friction: {x: .2, y: .2},
 	gravityFactor: 1,
 	stunTimer: null,
 	wantSwing: false,
