@@ -7,6 +7,41 @@ ig.module(
 )
 .defines(function(){
 
+
+//The Ball attached lines must be drawn before any ball, so they are their own entity with a different zIndex
+BallLine = ig.Entity.extend({
+
+	parentBall: null,
+	zIndex: 5,
+
+
+	init: function( x, y, settings ) {
+		this.parent( 0, 0, settings );
+		this.parentBall = settings.ball;
+	},
+
+	draw: function() {
+
+		if(this.parentBall && this.parentBall.attached)
+		{
+			ig.system.context.strokeStyle = '#fff';
+			ig.system.context.lineWidth = 3.0;
+
+			ig.system.context.beginPath();
+			ig.system.context.moveTo(
+				ig.system.getDrawPos(this.parentBall.centerX() - ig.game.screen.x),
+				ig.system.getDrawPos(this.parentBall.centerY() - ig.game.screen.y)
+			);
+			ig.system.context.lineTo(
+				ig.system.getDrawPos(this.parentBall.attachedNode.centerX() - ig.game.screen.x),
+				ig.system.getDrawPos(this.parentBall.attachedNode.centerY() - ig.game.screen.y)
+			);
+			ig.system.context.stroke();
+			ig.system.context.closePath();
+		}
+	},
+	});
+
 EntityBall = ig.Entity.extend({
 
 	size: {x:48, y:48},
@@ -16,7 +51,7 @@ EntityBall = ig.Entity.extend({
 	animSheet: new ig.AnimationSheet( 'media/ball.png', 48, 48 ),
 	angle: 0, //radians
 	angleSpeed: 0, //radians/s
-	zIndex: 1,
+	zIndex: 10,
 
 	bounciness: .8,
 	friction: {x: .2, y: .2},
@@ -38,6 +73,7 @@ EntityBall = ig.Entity.extend({
 
 		this.attached = false;
 		this.stunTimer = new ig.Timer();
+		ig.game.spawnEntity( "BallLine", 0,0, {"ball":this});
 	},
 
 
