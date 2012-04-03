@@ -24,7 +24,7 @@ BallLine = ig.Entity.extend({
 
 		if(this.parentBall && this.parentBall.attached)
 		{
-			ig.system.context.strokeStyle = '#fff';
+			ig.system.context.strokeStyle = '#e3f1ff';
 			ig.system.context.lineWidth = 3.0;
 
 			ig.system.context.beginPath();
