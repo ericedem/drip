@@ -16,7 +16,7 @@ EntityBall = ig.Entity.extend({
 	animSheet: new ig.AnimationSheet( 'media/ball.png', 48, 48 ),
 	zIndex: 1,
 
-	bounciness: 1,
+	bounciness: .8,
 	gravityFactor: 1,
 	stunTimer: null,
 	wantSwing: false,
