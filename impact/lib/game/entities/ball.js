@@ -150,7 +150,6 @@ EntityBall = ig.Entity.extend({
 					this.attachedSpeed = -this.attachedSpeed;
 				else
 					this.stun(0.5);
-				this.lastCollisionBall = null;
 			}
 			this.pos = res.pos;
 		}
