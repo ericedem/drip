@@ -18,5 +18,16 @@ app.configure(function(){
 app.listen(5678);
 
 io.sockets.on('connection', function(socket){
-    socket.emit('news', {hello:'world'});
+    socket.broadcast.emit('messege', {content:'A player has joined the server.'});
+    
+    socket.on('startSwing', function(data){
+        console.log('startSwing'); 
+    });
+    
+    socket.on('endSwing', function(data){
+        console.log('endSwing');
+    });
 });
+
+
+
