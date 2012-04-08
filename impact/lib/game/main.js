@@ -9,7 +9,9 @@ ig.module(
 	'game.entities.ball-ai',
 	'game.entities.node',
 	
-	'game.levels.main'
+	'game.levels.main',
+	
+	'game.config'
 )
 .defines(function(){
 

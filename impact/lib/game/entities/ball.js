@@ -47,7 +47,7 @@ BallLine = ig.Entity.extend({
 		{
 			this._drawLine(this.parentBall.attachedNode,
 				 '#e3f1ff',3.0);
-		} else if (this.parentBall.isPlayer){
+		} else if (this.parentBall.isPlayer && gfxConfig.DRAW_GHOST_LINE){
 			this._drawLine(this.parentBall.getClosestNode(),
 				 '#800000',2.0);
 		}
