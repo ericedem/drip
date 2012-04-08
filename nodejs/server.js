@@ -1,5 +1,6 @@
-var express = require('express');
-    app = express.createServer();
+var express = require('express'),
+    app = express.createServer(),
+    io = require('socket.io').listen(app);
     
 app.get("/", function(req,res){
     res.redirect("/index.html");
@@ -13,10 +14,9 @@ app.configure(function(){
         dumpExceptions: true,
         showStack: true
     }))
-})
+});
 app.listen(5678);
 
-var io = require('socket.io').listen(4567);
 io.sockets.on('connection', function(socket){
     socket.emit('news', {hello:'world'});
 });
