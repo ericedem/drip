@@ -8,6 +8,7 @@ ig.module(
 
 
 EntityBallPlayer = EntityBall.extend({
+	isPlayer: true,
 
 	init: function( x, y, settings ) {
 //		this.animSheet = new ig.AnimationSheet( 'media/ball.png', 48, 48, 30 );

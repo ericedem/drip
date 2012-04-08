@@ -19,28 +19,40 @@ BallLine = ig.Entity.extend({
 		this.parent( 0, 0, settings );
 		this.parentBall = settings.ball;
 	},
+	
+	/* helper function to do actual drawing. */
+	_drawLine: function(node,color,lineWidth){
+		if (! this.parentBall) throw "parentBall does not exist yet in _drawLine";
+		ig.system.context.strokeStyle = color;
+		ig.system.context.lineWidth = lineWidth;
+
+		ig.system.context.beginPath();
+		ig.system.context.moveTo(
+			ig.system.getDrawPos(this.parentBall.centerX() - ig.game.screen.x),
+			ig.system.getDrawPos(this.parentBall.centerY() - ig.game.screen.y)
+		);
+		ig.system.context.lineTo(
+			ig.system.getDrawPos(node.centerX() - ig.game.screen.x),
+			ig.system.getDrawPos(node.centerY() - ig.game.screen.y)
+		);
+		ig.system.context.stroke();
+		ig.system.context.closePath();
+	},
 
 	draw: function() {
-
-		if(this.parentBall && this.parentBall.attached)
+		if(!this.parentBall) return;
+		var node, color;
+		
+		if(this.parentBall.attached)
 		{
-			ig.system.context.strokeStyle = '#e3f1ff';
-			ig.system.context.lineWidth = 3.0;
-
-			ig.system.context.beginPath();
-			ig.system.context.moveTo(
-				ig.system.getDrawPos(this.parentBall.centerX() - ig.game.screen.x),
-				ig.system.getDrawPos(this.parentBall.centerY() - ig.game.screen.y)
-			);
-			ig.system.context.lineTo(
-				ig.system.getDrawPos(this.parentBall.attachedNode.centerX() - ig.game.screen.x),
-				ig.system.getDrawPos(this.parentBall.attachedNode.centerY() - ig.game.screen.y)
-			);
-			ig.system.context.stroke();
-			ig.system.context.closePath();
+			this._drawLine(this.parentBall.attachedNode,
+				 '#e3f1ff',3.0);
+		} else if (this.parentBall.isPlayer){
+			this._drawLine(this.parentBall.getClosestNode(),
+				 '#800000',2.0);
 		}
-	},
-	});
+	}
+});
 
 EntityBall = ig.Entity.extend({
 
@@ -172,9 +184,8 @@ EntityBall = ig.Entity.extend({
 		this.lastCollisionBall = otherBall;
 
 	},
-
-	startSwing: function() {
-
+	
+	getClosestNode: function () {
 		var nodes = ig.game.getEntitiesByType( EntityNode );
 		var closestNodeI = 0;
 		var closestDistanceSq = this.distanceToSq(nodes[0]);
@@ -186,7 +197,12 @@ EntityBall = ig.Entity.extend({
 				closestNodeI = e;
 			}
 		}
-		this.attachedNode = nodes[closestNodeI];
+		return nodes[closestNodeI];
+	},
+
+	startSwing: function() {
+		this.attachedNode = this.getClosestNode();
+		var closestDistanceSq = this.distanceToSq(this.attachedNode)
 
 		this.attachedDistance = Math.sqrt(closestDistanceSq);
 		this.attachedAngle = this.attachedNode.angleTo(this);
