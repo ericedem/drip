@@ -19,7 +19,21 @@ EntityBallPlayer = EntityBall.extend({
 		this.wantSwing = ig.input.state('z');
 
 		this.parent();
+	},
+	
+	/**
+	 * NOTIFY SERVER
+	 */
+	startSwing: function() {
+		ig.game.socket.emit('startSwing', {msg:"hello"});
+		this.parent();
+	},
+	
+	endSwing: function() {
+		ig.game.socket.emit('endSwing',{});
+		this.parent();
 	}
+	
 });
 
 });
