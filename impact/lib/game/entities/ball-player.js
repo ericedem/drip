@@ -16,7 +16,7 @@ EntityBallPlayer = EntityBall.extend({
 	},
 
 	update: function() {
-		this.wantSwing = ig.input.state('z');
+		this.wantSwing = ig.input.state('z') || ig.input.state('click');
 
 		this.parent();
 	},
