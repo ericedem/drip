@@ -11,7 +11,7 @@ EntityMarker = ig.Entity.extend({
 	size: {x:100, y:100},
 	collides: ig.Entity.COLLIDES.NEVER,
 
-	animSheet: new ig.AnimationSheet( 'media/node.png', 100, 100 ),
+	animSheet: new ig.AnimationSheet( 'media/goal.png', 100, 100 ),
 	zIndex: 0,
 
 	gravityFactor: 0,

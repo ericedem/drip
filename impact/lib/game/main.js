@@ -8,8 +8,10 @@ ig.module(
 	'game.entities.ball-player',
 	'game.entities.ball-ai',
 	'game.entities.node',
+	'game.entities.marker',
 
 	'game.levels.main',
+	'game.levels.tutorial',
 
 	'game.config',
 
@@ -67,8 +69,7 @@ MyGame = ig.Game.extend({
 			text: [ 'Tutorial' ],
 
 			pressedUp: function() {
-				alert("Tutorial NYI");
-//				ig.game.loadLevel( Tutorial );
+				ig.game.loadLevelDeferred( LevelTutorial );
 			}
 		} );
 
