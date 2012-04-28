@@ -89,6 +89,9 @@ EntityBall = ig.Entity.extend({
 
 		this.attached = false;
 		this.stunTimer = new ig.Timer();
+	},
+
+	postLoad: function() {
 		ig.game.spawnEntity( "BallLine", 0,0, {"ball":this});
 	},
 

@@ -56,6 +56,7 @@ ig.Game = ig.Class.extend({
 			var ent = data.entities[i];
 			this.spawnEntity( ent.type, ent.x, ent.y, ent.settings );
 		}
+		this.postLoadEntities();
 		this.sortEntities();
 
 		// Map Layer
@@ -71,6 +72,16 @@ ig.Game = ig.Class.extend({
 				newMap.distance = ld.distance;
 				newMap.foreground = !!ld.foreground;
 				this.backgroundMaps.push( newMap );
+			}
+		}
+	},
+
+	postLoadEntities: function() {
+		// call postload function on each entity, so they can spawn their own helper entities
+		for( var i = 0; i < this.entities.length; i++ ) {
+			var ent = this.entities[i];
+			if( ent.postLoad != null ) {
+				ent.postLoad();
 			}
 		}
 	},
