@@ -8,6 +8,7 @@ ig.module(
 .defines(function(){
 
 
+
 //The Ball attached lines must be drawn before any ball, so they are their own entity with a different zIndex
 BallLine = ig.Entity.extend({
 
@@ -19,7 +20,7 @@ BallLine = ig.Entity.extend({
 		this.parent( 0, 0, settings );
 		this.parentBall = settings.ball;
 	},
-	
+
 	/* helper function to do actual drawing. */
 	_drawLine: function(node,color,lineWidth){
 		if (! this.parentBall) throw "parentBall does not exist yet in _drawLine";
@@ -42,7 +43,7 @@ BallLine = ig.Entity.extend({
 	draw: function() {
 		if(!this.parentBall) return;
 		var node, color;
-		
+
 		if(this.parentBall.attached)
 		{
 			this._drawLine(this.parentBall.attachedNode,
@@ -54,12 +55,14 @@ BallLine = ig.Entity.extend({
 	}
 });
 
+
 EntityBall = ig.Entity.extend({
 
 	size: {x:48, y:48},
 	type: ig.Entity.BALL,
 	collides: ig.Entity.COLLIDES.ACTIVE,
 
+	skinFiles : ['media/ball.png', 'media/ball2.png'],
 	animSheet: new ig.AnimationSheet( 'media/ball.png', 48, 48 ),
 	angle: 0, //radians
 	angleSpeed: 0, //radians/s
@@ -75,6 +78,7 @@ EntityBall = ig.Entity.extend({
 
 
 	init: function( x, y, settings ) {
+
 		this.parent( x, y, settings );
 
 		this.addAnim( 'idle', 0.1, [0,0,0,0,0,0,1,1,2,3,4,3,2,1,1] );
@@ -184,7 +188,7 @@ EntityBall = ig.Entity.extend({
 		this.lastCollisionBall = otherBall;
 
 	},
-	
+
 	getClosestNode: function () {
 		var nodes = ig.game.getEntitiesByType( EntityNode );
 		var closestNodeI = 0;

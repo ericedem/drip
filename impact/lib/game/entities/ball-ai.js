@@ -9,7 +9,8 @@ ig.module(
 EntityBallAi = EntityBall.extend({
 
 	init: function( x, y, settings ) {
-		this.animSheet = new ig.AnimationSheet( 'media/ball.png', 48, 48, Math.random() * 360 );
+		var randomSkin = this.skinFiles[Math.floor(Math.random()*this.skinFiles.length)];
+		this.animSheet = new ig.AnimationSheet( randomSkin, 48, 48, Math.random() * 360 );
 		this.parent( x, y, settings );
 	},
 
