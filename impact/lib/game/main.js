@@ -28,6 +28,7 @@ MyGame = ig.Game.extend({
 
 	gravity:500,
 	init: function() {
+		this.socket = io.connect('http://localhost:5678')
 
 		ig.input.bind( ig.KEY.MOUSE1, 'click' );
 		ig.input.bind( ig.KEY.Z, 'z' );
@@ -39,6 +40,10 @@ MyGame = ig.Game.extend({
 	},
 
 	loadLevel: function(level) {
+		// TODO: Connect to server
+		
+		// TODO: After connection, the level should be loaded based on what the server says.
+		
 		this.parent(level);
 
 		//HUD buttons over every level
@@ -55,6 +60,8 @@ MyGame = ig.Game.extend({
 	},
 
 	mainMenu: function() {
+		// TODO: Disconnect from game server
+
 		ig.game.spawnEntity( Button, 768/2 - 64, 480/2-16,  {
 			text: [ 'Play' ],
 
