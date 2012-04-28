@@ -100,6 +100,6 @@ MyGame = ig.Game.extend({
 });
 
 
-ig.main( '#canvas', MyGame, 60, 768, 480, 1 );
+ig.main( '#canvas', MyGame, 60, 1280, 720, 1 );
 
 });
