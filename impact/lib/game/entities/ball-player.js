@@ -29,18 +29,18 @@ EntityBallPlayer = EntityBall.extend({
 			ig.game.screen.x = 0;
 		if(ig.game.screen.y < 0)
 			ig.game.screen.y = 0;
-		var tileSize = ig.game.collisionMap.tilesize;
-		if(ig.game.screen.y + ig.system.height > ig.game.collisionMap.height * tileSize)
-			ig.game.screen.y = ig.game.collisionMap.height * tileSize - ig.system.height;
-		if(ig.game.screen.x + ig.system.width > ig.game.collisionMap.width * tileSize )
-			ig.game.screen.x = ig.game.collisionMap.width * tileSize - ig.system.width;
+		if(ig.game.screen.y + ig.system.height > ig.game.height())
+			ig.game.screen.y = ig.game.height() - ig.system.height;
+		if(ig.game.screen.x + ig.system.width > ig.game.width())
+			ig.game.screen.x = ig.game.width() - ig.system.width;
 
 		//Center if view is larger than map (plus a 10% nudge of player position)
-		if(ig.game.collisionMap.height * tileSize < ig.system.height)
-			ig.game.screen.y = -(ig.system.height - ig.game.collisionMap.height * tileSize) / 2 + this.pos.y /10;
-		if(ig.game.collisionMap.width * tileSize < ig.system.width)
-			ig.game.screen.x = -(ig.system.width- ig.game.collisionMap.width* tileSize) / 2  + this.pos.x /10;
-
+		if(ig.game.height() < ig.system.height)
+			ig.game.screen.y = -(ig.system.height - ig.game.height()) / 2
+			+ (this.pos.y - ig.game.height() / 2) / 10;
+		if(ig.game.width() < ig.system.width)
+			ig.game.screen.x = -(ig.system.width - ig.game.width()) / 2
+			+ (this.pos.x - ig.game.width() / 2) / 10;
 	}
 });
 

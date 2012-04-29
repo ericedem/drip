@@ -57,20 +57,22 @@ MyGame = ig.Game.extend({
 	},
 
 	mainMenu: function() {
-		ig.game.spawnEntity( Button, 768/2 - 64, 480/2-16,  {
+		ig.game.spawnEntity( Button, 0, 0, {
 			text: [ 'Play' ],
 
 			pressedUp: function() {
 				ig.game.loadLevelDeferred( LevelMain );
-			}
+			},
+			anchor: ig.Entity.BUTTON_ANCHOR.CENTER
 		} );
 
-		ig.game.spawnEntity( Button, 768/2 - 64, 480/2+32,  {
+		ig.game.spawnEntity( Button, 0, 48, {
 			text: [ 'Tutorial' ],
 
 			pressedUp: function() {
 				ig.game.loadLevelDeferred( LevelTutorial );
-			}
+			},
+			anchor: ig.Entity.BUTTON_ANCHOR.CENTER
 		} );
 
 		this.state = 'menu';
@@ -100,6 +102,6 @@ MyGame = ig.Game.extend({
 });
 
 
-ig.main( '#canvas', MyGame, 60, 1280, 720, 1 );
+ig.main( '#canvas', MyGame, 60, 960, 720, 1 );
 
 });

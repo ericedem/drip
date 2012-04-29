@@ -243,6 +243,13 @@ ig.Game = ig.Class.extend({
 		}
 	},
 
+	width: function(){
+		return ig.game.collisionMap.width * ig.game.collisionMap.tilesize;
+	},
+	height: function(){
+		return ig.game.collisionMap.height * ig.game.collisionMap.tilesize;
+	},
+
 
 	checkEntities: function() {
 		// Insert all entities into a spatial hash and check them against any

@@ -41,6 +41,7 @@ ig.module('plugins.button')
 		text: [],
 		textPos: { x: 64, y: 8 },
 		textAlign: ig.Font.ALIGN.CENTER,
+		anchor: 0,
 
 		font: null,
 
@@ -52,91 +53,125 @@ ig.module('plugins.button')
 		_startedIn: false,
 
 		init: function( x, y, settings ) {
-		this.parent( x, y, settings );
+			this.parent( x, y, settings );
 
-		this.addAnim( 'idle', 1, [0] );
-		this.addAnim( 'hover', 1, [1] );
-		this.addAnim( 'active', 1, [2] );
-		this.addAnim( 'deactive', 1, [3] );
+			this.addAnim( 'idle', 1, [0] );
+			this.addAnim( 'hover', 1, [1] );
+			this.addAnim( 'active', 1, [2] );
+			this.addAnim( 'deactive', 1, [3] );
 
-		if ( this.text.length > 0 && this.font === null ) {
-			this.font = ig.game.font || new ig.Font( 'media/font-small.png' );
-		}
-	},
-
-	update: function() {
-		if ( this.state !== 'hidden' ) {
-			var _clicked = ig.input.state( 'click' );
-			var _in = this._inButton();
-
-			if ( !this._oldPressed && _clicked && _in ) {
-				this._startedIn = true;
+			if ( this.text.length > 0 && this.font === null ) {
+				this.font = ig.game.font || new ig.Font( 'media/font-small.png' );
 			}
+		},
 
-			if ( this._startedIn && this.state !== 'deactive' && _in ) {
-				if ( _clicked ){
-					if (this._oldPressed ) {
-						this.setState( 'active' );
-						this.pressed();
+		update: function() {
+			if ( this.state !== 'hidden' ) {
+				var _clicked = ig.input.state( 'click' );
+				var _in = this._inButton();
+
+				if ( !this._oldPressed && _clicked && _in ) {
+					this._startedIn = true;
+				}
+
+				if ( this._startedIn && this.state !== 'deactive' && _in ) {
+					if ( _clicked ){
+						if (this._oldPressed ) {
+							this.setState( 'active' );
+							this.pressed();
+						}
+						else {
+							this.setState( 'active' );
+							this.pressedDown();
+						}
 					}
-					else {
-						this.setState( 'active' );
-						this.pressedDown();
+					else if ( this._oldPressed ) { // up
+						this.setState( 'hover' );
+						this.pressedUp();
 					}
 				}
-				else if ( this._oldPressed ) { // up
+				else if ( _in ) {
 					this.setState( 'hover' );
-					this.pressedUp();
+				}
+				else if ( this.state === 'active' || this.state === 'hover' ) {
+					this.setState( 'idle' );
+				}
+
+				if ( this._oldPressed && !_clicked ) {
+					this._startedIn = false;
+				}
+
+				this._oldPressed = _clicked;
+			}
+		},
+
+		draw: function() {
+			if ( this.state !== 'hidden' ) {
+
+				var anchorPos = this.findAnchor();
+				this.currentAnim.draw(anchorPos.x, anchorPos.y);
+
+				for ( var i = 0; i < this.text.length; i++ ) {
+					this.font.draw(
+					this.text[i],
+					anchorPos.x + this.textPos.x,
+					anchorPos.y + ((this.font.height + 2) * i) + this.textPos.y,
+					this.textAlign
+					);
 				}
 			}
-			else if ( _in ) {
-				this.setState( 'hover' );
+		},
+
+		findAnchor: function() {
+
+			//find position via anchor
+			var drawX = Math.round(this.pos.x);
+			var drawY = Math.round(this.pos.y);
+			switch(this.anchor)
+			{
+				case ig.Entity.BUTTON_ANCHOR.SCREEN:
+					drawX -= ig.game.screen.x;
+					drawY -= ig.game.screen.y;
+					break;
+
+				case ig.Entity.BUTTON_ANCHOR.CENTER:
+					drawX += ig.system.width/2 - this.size.x/2;
+					drawY += ig.system.height/2 - this.size.y/2;
+					break;
+
+				case ig.Entity.BUTTON_ANCHOR.NONE:
+				default:
 			}
-			else if ( this.state === 'active' || this.state === 'hover' ) {
-				this.setState( 'idle' );
+			drawX -= this.offset.x;
+			drawY -= this.offset.y;
+			return {x:drawX, y:drawY};
+		},
+
+		setState: function( s ) {
+			this.state = s;
+
+			if ( this.state !== 'hidden' ) {
+				this.currentAnim = this.anims[ this.state ];
 			}
+		},
 
-			if ( this._oldPressed && !_clicked ) {
-				this._startedIn = false;
-			}
+		pressedDown: function() {},
+		pressed: function() {},
+		pressedUp: function() {},
 
-			this._oldPressed = _clicked;
-		}
-	},
-
-	draw: function() {
-		if ( this.state !== 'hidden' ) {
-			this.parent();
-
-			for ( var i = 0; i < this.text.length; i++ ) {
-				this.font.draw(
-				this.text[i],
-				this.pos.x + this.textPos.x - ig.game.screen.x,
-				this.pos.y + ((this.font.height + 2) * i) + this.textPos.y - ig.game.screen.y,
-				this.textAlign
-				);
-			}
-		}
-	},
-
-	setState: function( s ) {
-		this.state = s;
-
-		if ( this.state !== 'hidden' ) {
-			this.currentAnim = this.anims[ this.state ];
-		}
-	},
-
-	pressedDown: function() {},
-	pressed: function() {},
-	pressedUp: function() {},
-
-	_inButton: function() {
-		return ig.input.mouse.x + ig.game.screen.x > this.pos.x &&
-		ig.input.mouse.x + ig.game.screen.x < this.pos.x + this.size.x &&
-		ig.input.mouse.y + ig.game.screen.y > this.pos.y &&
-		ig.input.mouse.y + ig.game.screen.y < this.pos.y + this.size.y;
+		_inButton: function() {
+			var anchorPos = this.findAnchor();
+			return ig.input.mouse.x - anchorPos.x > 0 &&
+			ig.input.mouse.x - anchorPos.x < this.size.x &&
+			ig.input.mouse.y - anchorPos.y > 0 &&
+			ig.input.mouse.y - anchorPos.y < this.size.y;
 		}
 	});
+
+	ig.Entity.BUTTON_ANCHOR = {
+		NONE:0,
+		SCREEN: 1,
+		CENTER: 2 //TODO: RIGHT, TOP, BOTTOM?
+	};
 
 });
